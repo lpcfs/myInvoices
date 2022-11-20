@@ -60,7 +60,10 @@ export const Product = () => {
         <div>{product.description}</div>
         <br />
 
-        {product.image && <img src={product.image} alt="image" width="200px" />}
+        {product.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image} alt="image" width="400px" />
+        )}
 
         <br />
       </Box>
