@@ -1,5 +1,6 @@
-import { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "react"
-import { useField, UseFieldConfig } from "react-final-form"
+import { forwardRef, PropsWithoutRef, ComponentPropsWithoutRef } from "react"
+import { useFormContext } from "react-hook-form"
+import { ErrorMessage } from "@hookform/error-message"
 
 export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
   /** Field name. */
@@ -7,40 +8,48 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   /** Field label. */
   label: string
   /** Field type. Doesn't include radio buttons and checkboxes */
-  type?: "text" | "password" | "email" | "number"
+  type?: "text" | "password" | "email" | "number" | "file"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   labelProps?: ComponentPropsWithoutRef<"label">
-  fieldProps?: UseFieldConfig<string>
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
+  ({ label, outerProps, labelProps, name, ...props }, ref) => {
     const {
-      input,
-      meta: { touched, error, submitError, submitting },
-    } = useField(name, {
-      parse:
-        props.type === "number"
-          ? (Number as any)
-          : // Converting `""` to `null` ensures empty values will be set to null in the DB
-            (v) => (v === "" ? null : v),
-      ...fieldProps,
-    })
-
-    const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+      register,
+      formState: { isSubmitting, errors },
+    } = useFormContext()
 
     return (
       <div {...outerProps}>
         <label {...labelProps}>
           {label}
-          <input {...input} disabled={submitting} {...props} ref={ref} />
+          {props.type === "file" && (
+            <input disabled={isSubmitting} {...register(name)} {...props} />
+          )}
+          {props.type === "number" && (
+            <input
+              disabled={isSubmitting}
+              {...register(name, {
+                valueAsNumber: true,
+              })}
+              {...props}
+            />
+          )}
+          {props.type === "text" && (
+            <input disabled={isSubmitting} {...register(name)} {...props} />
+          )}
         </label>
 
-        {touched && normalizedError && (
-          <div role="alert" style={{ color: "red" }}>
-            {normalizedError}
-          </div>
-        )}
+        <ErrorMessage
+          render={({ message }) => (
+            <div role="alert" style={{ color: "red" }}>
+              {message}
+            </div>
+          )}
+          errors={errors}
+          name={name}
+        />
 
         <style jsx>{`
           label {
