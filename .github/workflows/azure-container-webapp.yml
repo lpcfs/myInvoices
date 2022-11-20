@@ -60,6 +60,8 @@ jobs:
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
+          build-args: |
+            DATABASE_URL=${{ env.DATABASE_URL }}
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
