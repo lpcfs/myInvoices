@@ -29,9 +29,8 @@ FROM base as prod
 ENV NODE_ENV=production
 ENV SESSION_SECRET_KEY=$SESSION_SECRET_KEY
 COPY --chown=node:node --from=build /home/node/app/public /home/node/app/public
-COPY --chown=node:node --from=build /home/node/app/.blitz /home/node/app/.blitz
+COPY --chown=node:node --from=build /home/node/app/.next /home/node/app/.next
 COPY --chown=node:node --from=build /home/node/app/db /home/node/app/db
-COPY --chown=node:node --from=build /home/node/app/blitz.config.js /home/node/app/blitz.config.js
 ENTRYPOINT ["/tini", "--"]
 EXPOSE 3000
 CMD blitz prisma generate && blitz start
