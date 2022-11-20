@@ -3,15 +3,19 @@ import { FormProvider, useForm, UseFormProps } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button, ButtonGroup } from "@mui/material"
+import { FormApi, SubmissionErrors } from "final-form"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
   /** All your form fields */
   children?: ReactNode
   /** Text to display in the submit button */
+  listText?: string
   submitText?: string
+  listCommand?: () => {}
   schema?: S
-  onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
+  onSubmit: (values: z.infer<S>) => void | SubmissionErrors | Promise<SubmissionErrors>
+  // onSubmit: (values: any, form: FormApi<any, Partial<any>>, callback?: ((errors?: SubmissionErrors) => void) | undefined) => void | SubmissionErrors | Promise<SubmissionErrors>
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 
@@ -82,7 +86,7 @@ export function Form<S extends z.ZodType<any, any>>({
           <Button
             variant="outlined"
             disabled={ctx.formState.isSubmitting || ctx.formState.isDirty}
-            onClick={async () => listCommand()}
+            onClick={async () => listCommand != null && listCommand()}
             sx={{ mt: "1rem", mb: "1rem", ml: "1rem" }}
           >
             {listText}

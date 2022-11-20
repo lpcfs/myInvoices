@@ -45,8 +45,8 @@ export const EditDocument = () => {
           onSubmit={async (values) => {
             try {
               const updated = await updateDocumentMutation({
-                id: document.id,
                 ...values,
+                id: document.id,
               })
               await setQueryData(updated)
               await router.push(Routes.ShowDocumentPage({ documentId: updated.id }))

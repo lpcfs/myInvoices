@@ -38,7 +38,7 @@ export const ProductsList = () => {
             <Link href={Routes.ShowProductPage({ productId: product.id })}>
               <ListItemButton>
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src={product.image} />
+                  {product.image && <Avatar alt="Remy Sharp" src={product.image} />}
                 </ListItemAvatar>
                 <ListItemText
                   primary={product.name}

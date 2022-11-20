@@ -60,7 +60,7 @@ export const Product = () => {
         <div>{product.description}</div>
         <br />
 
-        <img src={product.image} alt="image" width="200px" />
+        {product.image && <img src={product.image} alt="image" width="200px" />}
 
         <br />
       </Box>
