@@ -7,9 +7,7 @@ ENV PATH /home/node/app/node_modules/.bin:$PATH
 ENV TINI_VERSION v0.19.0
 EXPOSE 3000
 WORKDIR /home/node/app
-RUN apk add --no-cache make g++ python libsodium-dev openssl libtool autoconf automake \
-	&& rm -rf /var/cache/apk/* \
-	&& chown -R node:node /home/node/app
+RUN chown -R node:node /home/node/app
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 USER node
